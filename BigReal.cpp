@@ -329,7 +329,6 @@ bool BigReal::operator==(BigReal anotherReal) {
 BigReal BigReal::operator-(BigReal &anotherReal) {
     string result;
     int temp, carry = 0;
-    //cout<<sign<<'\n'<<anotherReal.sign<<'\n';
     if (sign == anotherReal.sign) {
         if ((anotherReal < *this && sign == '+') || (anotherReal > *this && sign == '-')) {
             if (fraction.size() > anotherReal.fraction.size()) {
@@ -440,5 +439,59 @@ BigReal BigReal::operator-(BigReal &anotherReal) {
         }
         return result;
     }
-}
+    else{
+        int common;
+        if (fraction.size() > anotherReal.fraction.size()) {
+            result = fraction.substr((anotherReal.fraction.size()), fraction.size() - anotherReal.fraction.size());
+            common = anotherReal.fraction.size();
+        } else if (fraction.size() < anotherReal.fraction.size()) {
+            result = anotherReal.fraction.substr((fraction.size()), anotherReal.fraction.size() - fraction.size());
+            common = fraction.size();
+        } else {
+            common = fraction.size();
+        }
+        for (int i = common - 1; i >= 0; --i) {
+            temp = carry + (fraction[i] - '0') + (anotherReal.fraction[i] - '0');
+            if (temp > 9) {
+                carry = 1;
+                temp -= 10;
+            } else {
+                carry = 0;
+            }
+            result = to_string(temp) + result;
+        }
+        //fraction + anotherReal.fraction;
+        result = '.' + result;
 
+        if (integer.size() > anotherReal.integer.size()) {
+            for (int i = 0; i < (integer.size() - anotherReal.integer.size()); ++i) {
+                anotherReal.integer = '0' + anotherReal.integer;
+            }
+        } else if (integer.size() < anotherReal.integer.size()) {
+            for (int i = 0; i < (anotherReal.integer.size() - integer.size()); ++i) {
+                integer = '0' + integer;
+            }
+        }
+        for (int i = integer.size() - 1; i >= 0; --i) {
+            temp = carry + (integer[i] - '0') + (anotherReal.integer[i] - '0');
+            if (temp > 9) {
+                carry = 1;
+                temp -= 10;
+            } else {
+                carry = 0;
+            }
+            result = to_string(temp) + result;
+        }
+        if (carry == 1) {
+            result = '1' + result;
+        }
+
+        if (sign == '-') {
+            result = '-' + result;
+        }
+        //return result;
+        cout << result;
+            return result;
+
+    }
+}
