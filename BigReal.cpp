@@ -18,12 +18,12 @@ BigReal::BigReal(string real) {
         if (real.find('.') != -1) {
             integer = real.substr(0, real.find('.'));
             while (integer.length() > 1 && integer[0] == '0') {
-                integer = integer.substr(1); //0000.1
+                integer = integer.substr(1);
             }
             if (integer.empty())
                 integer = '0';
             fraction = real.substr(integer.size() + 1, real.find('\0') - integer.size() - 1);
-            while (fraction.length() > 1 && fraction[fraction.length() - 1] == 0){
+            while (fraction.length() > 1 && fraction[fraction.length() - 1] == 0) {
                 fraction.pop_back();
             }
             if (fraction.empty())
@@ -328,9 +328,10 @@ bool BigReal::operator==(BigReal anotherReal) {
 
 BigReal BigReal::operator-(BigReal &anotherReal) {
     string result;
-    int temp, carry = 0, n;
+    int temp, carry = 0;
+    //cout<<sign<<'\n'<<anotherReal.sign<<'\n';
     if (sign == anotherReal.sign) {
-        if (anotherReal < *this) {
+        if ((anotherReal < *this && sign == '+') || (anotherReal > *this && sign == '-')) {
             if (fraction.size() > anotherReal.fraction.size()) {
                 for (int i = anotherReal.fraction.size(); i < (fraction.size()); ++i) {
                     anotherReal.fraction = anotherReal.fraction + '0';
@@ -352,13 +353,13 @@ BigReal BigReal::operator-(BigReal &anotherReal) {
                 result = to_string(temp) + result;
             }
             result = '.' + result;
-
+//            string tempString=anotherReal.integer;
             if (integer.size() > anotherReal.integer.size()) {
-                for (int i = 0; i <= (integer.size() - anotherReal.integer.size()); ++i) {
-                    anotherReal = '0' + anotherReal.integer;
+                for (int i = 0; i < (integer.size() - anotherReal.integer.size()); ++i) {
+                    anotherReal.integer = '0' + anotherReal.integer;
                 }
             } else if (integer.size() < anotherReal.integer.size()) {
-                for (int i = 0; i <= (anotherReal.integer.size() - integer.size()); ++i) {
+                for (int i = 0; i < (anotherReal.integer.size() - integer.size()); ++i) {
                     integer = '0' + integer;
                 }
             }
@@ -373,18 +374,71 @@ BigReal BigReal::operator-(BigReal &anotherReal) {
                 result = to_string(temp) + result;
 
             }
-            cout << result <<"\n";
-        } else if (anotherReal > *this) {
+            while (result.length() > 1 && result[0] == '0' && result[1] != '.') {
+                result = result.substr(1);
+            }
+            if (sign == '-') {
+                result = '-' + result;
+            }
+            cout << result;
+            return result;
+        }
+        else if ((anotherReal > *this && sign == '+') || (anotherReal < *this && sign == '-'))  {
+            if (fraction.size() > anotherReal.fraction.size()) {
+                for (int i = anotherReal.fraction.size(); i < (fraction.size()); ++i) {
+                    anotherReal.fraction = anotherReal.fraction + '0';
+                }
+            } else if (fraction.size() < anotherReal.fraction.size()) {
+                for (int i = fraction.size(); i < (anotherReal.fraction.size()); ++i) {
+                    fraction = fraction + '0';
+                }
+            }
+            for (int i = fraction.size() - 1; i >= 0; --i) {
+                temp = carry + (anotherReal.fraction[i] - '0') - (fraction[i] - '0');
+                if (temp < 0) {
+                    temp += 10;
+                    carry = -1;
+                } else {
+                    carry = 0;
+                }
+                result = to_string(temp) + result;
+            }
+            result = '.' + result;
 
-        } else {
+            if (integer.size() > anotherReal.integer.size()) {
+                for (int i = 0; i <= (integer.size() - anotherReal.integer.size()); ++i) {
+                    anotherReal.integer = '0' + anotherReal.integer;
+                }
+            } else if (integer.size() < anotherReal.integer.size()) {
+                for (int i = 0; i <= (anotherReal.integer.size() - integer.size()); ++i) {
+                    integer = '0' + integer;
+                }
+            }
+            for (int i = integer.size() - 1; i >= 0; --i) {
+                temp = carry + (anotherReal.integer[i] - '0') - (integer[i] - '0');
+                if (temp < 0) {
+                    temp += 10;
+                    carry = -1;
+                } else {
+                    carry = 0;
+                }
+                result = to_string(temp) + result;
+
+            }
+            while (result.length() > 1 && result[0] == '0' && result[1] != '.') {
+                result = result.substr(1);
+            }
+            if (sign == '+') {
+                result = '-' + result;
+            }
+            cout << result;
+            return result;
+        }
+        else {
             cout << "0";
             result = '0';
         }
-        // remove leading zeros
-        while (result.length() > 1 && result[0] == '0' && result[1] != '.') {
-            result = result.substr(1);
-        }
-        cout << result;
         return result;
     }
 }
+
