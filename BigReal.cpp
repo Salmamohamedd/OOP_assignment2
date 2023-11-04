@@ -103,3 +103,70 @@ BigReal BigReal::operator+(BigReal &anotherReal) {
 
 
 }
+
+bool BigReal:: operator< (BigReal anotherReal){
+    if (sign != anotherReal.sign) {
+        if (sign == '-') {
+            cout << "true";
+            return true;
+        }else {
+            cout << "False";
+            return false;
+
+        }
+    }
+    if (integer.size() != anotherReal.integer.size()) {
+        if (integer.size() > anotherReal.integer.size()) {
+            cout << "False";
+            return false;
+        }
+        else{
+            cout << "true";
+            return true;
+        }
+    }else {
+        for(int i = 0; i < integer.size(); i++){
+            if (integer[i] > anotherReal.integer[i]){
+                cout << "False";
+                return false;
+            }
+            else if (integer[i] < anotherReal.integer[i]){
+                cout << "true";
+                return true;
+            }
+
+        }
+
+    }
+
+    if (fraction.size() > anotherReal.fraction.size()){
+        for (int i = anotherReal.fraction.size(); i < (fraction.size() - anotherReal.fraction.size()); ++i) {
+            anotherReal.fraction[i] = '0';
+        }
+    } else if (fraction.size() < anotherReal.fraction.size()){
+        for (int i = fraction.size(); i < (anotherReal.fraction.size() - fraction.size()); ++i) {
+            fraction[i] = '0';
+        }
+    }
+    for(int i = 0; i < fraction.size(); i++){
+        if (fraction[i] > anotherReal.fraction[i]){
+            cout << "False";
+            return false;
+        }
+        else if (fraction[i] < anotherReal.fraction[i]) {
+            cout << "True";
+            return true;
+        }
+    }
+
+}
+
+
+
+
+bool BigReal::operator> (BigReal anotherReal){
+
+}
+bool BigReal::operator== (BigReal anotherReal) {
+
+}
