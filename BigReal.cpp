@@ -82,7 +82,7 @@ BigReal BigReal::operator+(BigReal &anotherReal) {
 
         if (integer.size() > anotherReal.integer.size()) {
             for (int i = 0; i < (integer.size() - anotherReal.integer.size()); ++i) {
-                anotherReal = '0' + anotherReal.integer;
+                anotherReal.integer = '0' + anotherReal.integer;
             }
         } else if (integer.size() < anotherReal.integer.size()) {
             for (int i = 0; i < (anotherReal.integer.size() - integer.size()); ++i) {
