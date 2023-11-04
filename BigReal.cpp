@@ -45,27 +45,38 @@ void BigReal::print() {
 }
 
 BigReal BigReal::operator+(BigReal &anotherReal) {
-    string result="";
-    int common,temp, carry=0;
-    if (fraction.size()> anotherReal.fraction.size()){
-        result=fraction.substr((anotherReal.fraction.size())+1, fraction.size()-anotherReal.fraction.size());
-        common=anotherReal.fraction.size();
-    }else if(fraction.size()<anotherReal.fraction.size()){
-        result=anotherReal.fraction.substr((fraction.size())+1, anotherReal.fraction.size()-fraction.size());
-        common= fraction.size();
-    }else{
-        common=fraction.size();
+    string result;
+    int common,temp, carry = 0;
+    if (fraction.size() > anotherReal.fraction.size()){
+        result = fraction.substr((anotherReal.fraction.size())+1, fraction.size()-anotherReal.fraction.size());
+        common = anotherReal.fraction.size();
+    } else if(fraction.size() < anotherReal.fraction.size()){
+        result = anotherReal.fraction.substr((fraction.size())+1, anotherReal.fraction.size()-fraction.size());
+        common = fraction.size();
+    } else {
+        common = fraction.size();
     }
     for (int i = common-1; i >=0 ; --i) {
-        temp = carry + fraction[i] + anotherReal.fraction[i] - '0';
-        if (temp > '9'){
-            carry=1;
+        temp = carry + (fraction[i] - '0') + (anotherReal.fraction[i] - '0');
+        if (temp > 9){
+            carry = 1;
             temp -= 10;
         }else {
             carry =0;
         }
-        //result=temp +result;
+        result = to_string(temp) + result;
+    }
+    //fraction + anotherReal.fraction;
+    result = '.' + result;
+
+    if (integer.size() > anotherReal.integer.size()){
+        for (int i = 0; i < (integer.size() - anotherReal.integer.size()); ++i) {
+            anotherReal = '0' + anotherReal.integer;
+        }
+    }else if (integer.size() < anotherReal.integer.size()){
+        for (int i = 0; i < (anotherReal.integer.size() - integer.size()); ++i) {
+            integer = '0' + integer;
+        }
     }
 
-    //fraction + anotherReal.fraction;
 }
