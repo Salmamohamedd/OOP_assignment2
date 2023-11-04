@@ -17,7 +17,17 @@ BigReal::BigReal(string real) {
         }
         if (real.find('.') != -1) {
             integer = real.substr(0, real.find('.'));
+            while (integer.length() > 1 && integer[0] == '0') {
+                integer = integer.substr(1); //0000.1
+            }
+            if (integer.empty())
+                integer = '0';
             fraction = real.substr(integer.size() + 1, real.find('\0') - integer.size() - 1);
+            while (fraction.length() > 1 && fraction[fraction.length() - 1] == 0){
+                fraction.pop_back();
+            }
+            if (fraction.empty())
+                fraction = '0';
         } else {
             integer = real.substr(0, real.find('\0'));
             fraction = '0';
@@ -363,13 +373,18 @@ BigReal BigReal::operator-(BigReal &anotherReal) {
                 result = to_string(temp) + result;
 
             }
-            cout << result;
+            cout << result <<"\n";
         } else if (anotherReal > *this) {
 
         } else {
             cout << "0";
             result = '0';
         }
+        // remove leading zeros
+        while (result.length() > 1 && result[0] == '0' && result[1] != '.') {
+            result = result.substr(1);
+        }
+        cout << result;
         return result;
     }
 }
