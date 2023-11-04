@@ -49,10 +49,10 @@ BigReal BigReal::operator+(BigReal &anotherReal) {
         string result;
         int common,temp, carry = 0;
         if (fraction.size() > anotherReal.fraction.size()){
-            result = fraction.substr((anotherReal.fraction.size())+1, fraction.size()-anotherReal.fraction.size());
+            result = fraction.substr((anotherReal.fraction.size()), fraction.size()-anotherReal.fraction.size());
             common = anotherReal.fraction.size();
         } else if(fraction.size() < anotherReal.fraction.size()){
-            result = anotherReal.fraction.substr((fraction.size())+1, anotherReal.fraction.size()-fraction.size());
+            result = anotherReal.fraction.substr((fraction.size()), anotherReal.fraction.size()-fraction.size());
             common = fraction.size();
         } else {
             common = fraction.size();
@@ -92,6 +92,12 @@ BigReal BigReal::operator+(BigReal &anotherReal) {
         if (carry == 1){
             result = '1' + result;
         }
+
+        if (sign == '-'){
+            result = '-' + result;
+        }
+        //return result;
+        cout << result;
     }
 
 
