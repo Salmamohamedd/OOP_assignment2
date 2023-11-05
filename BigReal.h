@@ -21,7 +21,6 @@ public:
     bool operator== (BigReal anotherReal);
     friend ostream& operator << (ostream& out, BigReal num);
 
-    void print();
 };
 
 #endif //BIGREAL_BIGREAL_H
