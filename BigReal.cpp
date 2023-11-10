@@ -20,14 +20,17 @@ BigReal::BigReal(string real) {
             while (integer.length() > 1 && integer[0] == '0') {
                 integer = integer.substr(1);
             }
-            if (integer.empty())
-                integer = '0';
-            fraction = real.substr(integer.size() + 1, real.find('\0') - integer.size() - 1);
+            if (integer.empty()) {
+                integer.push_back('0');
+                fraction = real.substr(integer.size(), real.find('\0') - integer.size() - 1);
+            }else {
+                fraction = real.substr(integer.size() + 1, real.find('\0') - integer.size() - 1);
+            }
             while (fraction.length() > 1 && fraction[fraction.length() - 1] == 0) {
                 fraction.pop_back();
             }
             if (fraction.empty())
-                fraction = '0';
+                fraction = "0";
         } else {
             integer = real.substr(0, real.find('\0'));
             fraction = '0';
@@ -110,7 +113,8 @@ BigReal BigReal::operator+(BigReal &anotherReal) {
         }
         //cout << result;
         return result;
-    } else {
+    }
+    else {
         int temp, carry = 0;
         string result, this1 = (integer + '.' + fraction), another = (anotherReal.integer + '.' + anotherReal.fraction);
 
@@ -141,11 +145,11 @@ BigReal BigReal::operator+(BigReal &anotherReal) {
             result = '.' + result;
 
             if (integer.size() > anotherReal.integer.size()) {
-                for (int i = 0; i < (integer.size() - anotherReal.integer.size()); ++i) {
+                for (int i = anotherReal.integer.size(); i < integer.size(); ++i) {
                     anotherReal.integer = '0' + anotherReal.integer;
                 }
             } else if (integer.size() < anotherReal.integer.size()) {
-                for (int i = 0; i < (anotherReal.integer.size() - integer.size()); ++i) {
+                for (int i = integer.size(); i < anotherReal.integer.size(); ++i) {
                     integer = '0' + integer;
                 }
             }
@@ -195,11 +199,11 @@ BigReal BigReal::operator+(BigReal &anotherReal) {
             result = '.' + result;
 
             if (integer.size() > anotherReal.integer.size()) {
-                for (int i = 0; i <= (integer.size() - anotherReal.integer.size()); ++i) {
+                for (int i = anotherReal.integer.size(); i < integer.size(); ++i) {
                     anotherReal.integer = '0' + anotherReal.integer;
                 }
             } else if (integer.size() < anotherReal.integer.size()) {
-                for (int i = 0; i <= (anotherReal.integer.size() - integer.size()); ++i) {
+                for (int i = integer.size(); i < anotherReal.integer.size(); ++i) {
                     integer = '0' + integer;
                 }
             }
@@ -448,8 +452,9 @@ bool BigReal::operator==(BigReal anotherReal) {
 
 BigReal BigReal::operator-(BigReal &anotherReal) {
     string result = "";
-    int temp, carry = 0;
+    int temp = 0, carry = 0;
     if (sign == anotherReal.sign) {
+        // 2 - 1
         if ((anotherReal < *this && sign == '+') || (anotherReal > *this && sign == '-')) {
             if (fraction.size() > anotherReal.fraction.size()) {
                 for (int i = anotherReal.fraction.size(); i < (fraction.size()); ++i) {
@@ -476,11 +481,11 @@ BigReal BigReal::operator-(BigReal &anotherReal) {
             result = '.' + result;
 
             if (integer.size() > anotherReal.integer.size()) {
-                for (int i = 0; i < (integer.size() - anotherReal.integer.size()); ++i) {
+                for (int i = anotherReal.integer.size(); i < integer.size(); ++i) {
                     anotherReal.integer = '0' + anotherReal.integer;
                 }
             } else if (integer.size() < anotherReal.integer.size()) {
-                for (int i = 0; i < (anotherReal.integer.size() - integer.size()); ++i) {
+                for (int i = integer.size(); i < anotherReal.integer.size(); ++i) {
                     integer = '0' + integer;
                 }
             }
@@ -503,7 +508,8 @@ BigReal BigReal::operator-(BigReal &anotherReal) {
             }
             //cout << result;
             return result;
-        } else if ((anotherReal > *this && sign == '+') || (anotherReal < *this && sign == '-')) {
+        }
+        else if ((anotherReal > *this && sign == '+') || (anotherReal < *this && sign == '-')) {
             if (fraction.size() > anotherReal.fraction.size()) {
                 for (int i = anotherReal.fraction.size(); i < (fraction.size()); ++i) {
                     anotherReal.fraction = anotherReal.fraction + '0';
@@ -529,11 +535,11 @@ BigReal BigReal::operator-(BigReal &anotherReal) {
             result = '.' + result;
 
             if (integer.size() > anotherReal.integer.size()) {
-                for (int i = 0; i <= (integer.size() - anotherReal.integer.size()); ++i) {
+                for (int i = anotherReal.integer.size(); i < integer.size(); ++i) {
                     anotherReal.integer = '0' + anotherReal.integer;
                 }
             } else if (integer.size() < anotherReal.integer.size()) {
-                for (int i = 0; i <= (anotherReal.integer.size() - integer.size()); ++i) {
+                for (int i = integer.size(); i < anotherReal.integer.size(); ++i) {
                     integer = '0' + integer;
                 }
             }
@@ -563,7 +569,7 @@ BigReal BigReal::operator-(BigReal &anotherReal) {
         return result;
     }
     else {
-        int common;
+        int common = 0;
         if (fraction.size() > anotherReal.fraction.size()) {
             result = fraction.substr((anotherReal.fraction.size()), fraction.size() - anotherReal.fraction.size());
             common = anotherReal.fraction.size();
@@ -592,15 +598,16 @@ BigReal BigReal::operator-(BigReal &anotherReal) {
         result = '.' + result;
 
         if (integer.size() > anotherReal.integer.size()) {
-            for (int i = 0; i < (integer.size() - anotherReal.integer.size()); ++i) {
+            for (int i = anotherReal.integer.size(); i < integer.size(); ++i) {
                 anotherReal.integer = '0' + anotherReal.integer;
             }
         } else if (integer.size() < anotherReal.integer.size()) {
-            for (int i = 0; i < (anotherReal.integer.size() - integer.size()); ++i) {
+            for (int i = integer.size(); i < anotherReal.integer.size(); ++i) {
                 integer = '0' + integer;
             }
         }
         for (int i = integer.size() - 1; i >= 0; --i) {
+            temp = 0;
             temp = carry + (integer[i] - '0') + (anotherReal.integer[i] - '0');
             if (temp > 9) {
                 carry = 1;
@@ -628,7 +635,7 @@ BigReal BigReal::operator-(BigReal &anotherReal) {
 
 
 ostream &operator<<(ostream &out, BigReal num) {
-    if (num.sign == '-' && num.integer != "0" && num.fraction != "0") {
+    if (num.sign == '-') {
         out << num.sign << num.integer << '.' << num.fraction;
     } else {
         out << num.integer << '.' << num.fraction;
