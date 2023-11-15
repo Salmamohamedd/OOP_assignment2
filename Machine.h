@@ -7,13 +7,13 @@ using namespace std;
 
 class Memory {
 private:
-   // string file;
+    // string file;
     vector<string>memo;
     vector<string>R;
 public:
-    Memory(string file);
-    void setMemory(string);
-    void setR(string);
+    Memory();
+//    void setMemorySize();
+//    void setRSize();
     friend class Machine;
     friend class Instruction;
 };
@@ -23,22 +23,27 @@ private:
     string file;
     int programCounter = 0; //?????
 public:
-//    Machine(vector<string >r, vector<string>m);
+    //   Machine(string file);
 //    void loadProgramFile();
-    void output();
+    virtual void output(Memory &m);
     void displayMenu();
     string getNextInstruction(string first, string second, string third);
-    void runInstruction(string Instruction);
     friend class Instruction;
 };
 
-class Instruction {
-
+class Instruction: public Machine{
+private:
+    Machine machine;
+    Memory memory;
 public:
-    Instruction();
+    void setR(Memory &memory1);
+    void setMemo(Memory &memory1);
     void execute();
-    void Load1(string reg, string address);
-//    void Load2();
-//    void Store();
+    void Load1(string , string);
+    void Load2(string, string);
+    void output(Memory &m);
+    void Store(string, string);
+    void move(string, string);
+    void add(string, string, string);
 };
 #endif //MACHINETASK_MACHINE_H
