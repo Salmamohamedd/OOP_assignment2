@@ -61,8 +61,8 @@ void Instruction::execute() {
             Load1(r, a);
         }
         else if (inst == '2'){
-         Load2(r, a);
-         }
+            Load2(r, a);
+        }
         else if (inst == '3'){
             if (a == "00"){
                 int index_reg = stoi(r, nullptr, 16);
@@ -82,6 +82,12 @@ void Instruction::execute() {
             ss = ss + instruction[i][3];
             add(r, rr, ss);
         }
+        else if (inst == 'B'){
+            i= jump(r, a, i);
+
+        } else if (inst=='C'){
+            halt();
+        }
     }
 }
 
@@ -92,52 +98,15 @@ void Instruction::Load1(string reg, string address) {
 
 }
 
-void Instruction::setR(Memory &memory1) {
-    for (int i = 0; i < 16; ++i) {
-        memory1.R[i] = memory.R[i];
-    }
-
-}
-
-void Instruction::setMemo(Memory &memory1) {
-    for (int i = 0; i < 256; ++i) {
-        memory1.memo[i] = memory.memo[i];
-    }
-}
-
 void Instruction::Load2(string reg, string address) {
     int index_reg = stoi(reg, nullptr, 16);
     memory.R[index_reg] = address;
 }
 
-void Machine::output(Memory &memory) {
-    cout << "Memory: " << '\n';
-    for (int i = 0; i < memory.memo.size(); ++i) {
-        cout << memory.memo[i] << '\n';
-    }
-    cout << "Registers: " << '\n';
-    for (int i = 0; i < memory.R.size(); ++i) {
-        cout << memory.R[i] << '\n';
-    }
-}
-
-void Instruction::output(Memory &memory) {
-    setR(memory);
-    setMemo(memory);
-    cout << "Memory: " << '\n';
-    for (int i = 0; i < memory.memo.size(); ++i) {
-        cout << memory.memo[i] << '\n';
-    }
-    cout << "Registers: " << '\n';
-    for (int i = 0; i < memory.R.size(); ++i) {
-        cout << memory.R[i] << '\n';
-    }
-}
-
 void Instruction::Store(string reg, string address) {
     int index_reg = stoi(reg, nullptr, 16);
     int index_address = stoi(address, nullptr, 16);
-     memory.memo[index_address] = memory.R[index_reg];
+    memory.memo[index_address] = memory.R[index_reg];
 }
 
 void Instruction::move(string R, string S) {
@@ -165,46 +134,100 @@ void Instruction::add(string R, string S, string T) {
         }
     }
 
-        string binaryT = "";
-        for (int i = 0; i < patternT.length(); i++) {
-            c = patternT[i];
-            if (c >= '0' && c <= '9') {
-                binaryT += bitset<4>(c - '0').to_string();
-            } else if (c >= 'A' && c <= 'F') {
-                binaryT += bitset<4>(c - 'A' + 10).to_string();
-            } else if (c >= 'a' && c <= 'f') {
-                binaryT += bitset<4>(c - 'a' + 10).to_string();
-            }
+    string binaryT = "";
+    for (int i = 0; i < patternT.length(); i++) {
+        c = patternT[i];
+        if (c >= '0' && c <= '9') {
+            binaryT += bitset<4>(c - '0').to_string();
+        } else if (c >= 'A' && c <= 'F') {
+            binaryT += bitset<4>(c - 'A' + 10).to_string();
+        } else if (c >= 'a' && c <= 'f') {
+            binaryT += bitset<4>(c - 'a' + 10).to_string();
         }
-        string sum="";
-        int len1, len2, i, j, ds=0;
-        len1 = binaryS.size();
-        len2 = binaryT.size();
-        i = len1 - 1;
-        j = len2 - 1;
-        while(i>=0 || j>=0 || ds==1)
-        {
-            ds = ds + ((i >= 0) ? binaryS[i] - '0' : 0);
-            ds = ds + ((j >= 0) ? binaryT[j] - '0' : 0);
-            sum = char(ds % 2 + '0') + sum;
-            ds = ds/2;
-            i--;
-            j--;
-        }
-
-        string hexa = "";
-        for (int i = 0; i < sum.length(); i += 4) {
-            string b = sum.substr(i, 4);
-            c = (char) stoi(b, nullptr, 2);
-            if (c >= 10 && c <= 15) {
-                hexa += char(c - 10 + 'A');
-            } else {
-                hexa += to_string(c);
-            }
-        }
-        memory.R[index_reg] = hexa;
-
     }
+    string sum="";
+    int len1, len2, i, j, ds=0;
+    len1 = binaryS.size();
+    len2 = binaryT.size();
+    i = len1 - 1;
+    j = len2 - 1;
+    while(i>=0 || j>=0 || ds==1)
+    {
+        ds = ds + ((i >= 0) ? binaryS[i] - '0' : 0);
+        ds = ds + ((j >= 0) ? binaryT[j] - '0' : 0);
+        sum = char(ds % 2 + '0') + sum;
+        ds = ds/2;
+        i--;
+        j--;
+    }
+
+    string hexa = "";
+    for (int i = 0; i < sum.length(); i += 4) {
+        string b = sum.substr(i, 4);
+        c = (char) stoi(b, nullptr, 2);
+        if (c >= 10 && c <= 15) {
+            hexa += char(c - 10 + 'A');
+        } else {
+            hexa += to_string(c);
+        }
+    }
+    memory.R[index_reg] = hexa;
+
+}
+
+int Instruction::jump(string reg, string address, int currentIndex) {
+    int index_reg = stoi(reg, nullptr, 16);
+    int index_address = stoi(address, nullptr, 16);
+    if (memory.R[index_reg] == memory.R[0]){
+        int jump_index = index_address;
+        return jump_index;
+    } else {
+        return currentIndex;
+    }
+}
+
+int Instruction::halt() {
+    return 0;
+}
+
+void Instruction::setR(Memory &memory1) {
+    for (int i = 0; i < 16; ++i) {
+        memory1.R[i] = memory.R[i];
+    }
+
+}
+
+void Instruction::setMemo(Memory &memory1) {
+    for (int i = 0; i < 256; ++i) {
+        memory1.memo[i] = memory.memo[i];
+    }
+}
+
+void Machine::output(Memory &memory) {
+    cout << "Memory: " << '\n';
+    for (int i = 0; i < memory.memo.size(); ++i) {
+        cout << memory.memo[i] << '\n';
+    }
+    cout << "Registers: " << '\n';
+    for (int i = 0; i < memory.R.size(); ++i) {
+        cout << memory.R[i] << '\n';
+    }
+}
+
+void Instruction::output(Memory &memory) {
+    setR(memory);
+    setMemo(memory);
+    cout << "Memory: " << '\n';
+    for (int i = 0; i < memory.memo.size(); ++i) {
+        cout << memory.memo[i] << '\n';
+    }
+    cout << "Registers: " << '\n';
+    for (int i = 0; i < memory.R.size(); ++i) {
+        cout << memory.R[i] << '\n';
+    }
+}
+
+
 
 
 
