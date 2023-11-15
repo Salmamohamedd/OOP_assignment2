@@ -21,6 +21,7 @@ public:
 class Machine {
 private:
     string file;
+protected:
     int programCounter = 0; //?????
 public:
     //   Machine(string file);
@@ -45,5 +46,8 @@ public:
     void Store(string, string);
     void move(string, string);
     void add(string, string, string);
+    int jump(string, string , int);
+    int halt();
+
 };
 #endif //MACHINETASK_MACHINE_H
