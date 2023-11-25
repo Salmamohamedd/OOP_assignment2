@@ -139,7 +139,7 @@ void Instruction::move(const string& R, const string& S) {
     int index_reg1 = stoi(R, nullptr, 16);
     int index_reg2 = stoi(S, nullptr, 16);
     regi.R[index_reg2] = regi.R[index_reg1];
-    regi.R[index_reg1] = "00";
+//    regi.R[index_reg1] = "00";
 }
 
 void Instruction::add(const string &R, const string &S, const string &T) {
