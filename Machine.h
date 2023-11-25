@@ -5,13 +5,22 @@
 
 using namespace std;
 
+class Register{
+private:
+    vector<string>R;
+public:
+    Register();
+    friend class Machine;
+    friend class Instruction;
+};
+
 class Memory {
 private:
     // string file;
     vector<string>memo;
-    vector<string>R;
 public:
     Memory();
+    Memory(string);
 //    void setMemorySize();
 //    void setRSize();
     friend class Machine;
@@ -21,14 +30,16 @@ public:
 class Machine {
 private:
     string file;
+    Memory memory;
+    Register R;
 protected:
     int programCounter = 0; //?????
 public:
     //   Machine(string file);
 //    void loadProgramFile();
-    virtual void output(Memory &m);
+    virtual void output(Memory &m, Register &r);
     void displayMenu();
-    string getNextInstruction(string first, string second, string third);
+    string getNextInstruction(const string &first,const string &second,const string &third);
     friend class Instruction;
 };
 
@@ -36,18 +47,18 @@ class Instruction: public Machine{
 private:
     Machine machine;
     Memory memory;
+    Register regi;
 public:
-    void setR(Memory &memory1);
-    void setMemo(Memory &memory1);
     void execute();
-    void Load1(string , string);
-    void Load2(string, string);
-    void output(Memory &m);
-    void Store(string, string);
-    void move(string, string);
-    void add(string, string, string);
-    int jump(string, string , int);
-    int halt();
+    void setR(Register &reg);
+    void setMemo(Memory &memory1);
+    void Load1(const string& , const string&);
+    void Load2(const string&, const string&);
+    void output(Memory &m, Register &r);
+    void Store(const string&, const string&);
+    void move(const string&, const string&);
+    void add(const string&, const string&, const string&);
+    int jump(const string&, const string& , int);
 
 };
 #endif //MACHINETASK_MACHINE_H
